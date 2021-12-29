@@ -1,0 +1,3 @@
+# -*- python -*-
+
+shell_sources()

@@ -1,0 +1,3 @@
+FROM alpine
+ENTRYPOINT ["/bin/main.sh"]
+COPY src/shell/hello_world/main.sh /bin/

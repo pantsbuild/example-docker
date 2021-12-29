@@ -59,7 +59,8 @@ Try these out in this repo!
 ## Run a Docker image
 
 ```
-./pants run src/docker/hello_world
+./pants run src/docker/hello_world:python
+./pants run src/docker/hello_world:shell
 ```
 
 
