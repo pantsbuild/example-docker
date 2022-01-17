@@ -1,5 +1,6 @@
-# Copyright 2021 Pants project contributors.
+# Copyright 2022 Pants project contributors.
 # Licensed under the Apache License, Version 2.0 (see LICENSE).
-FROM alpine
+
+FROM alpine@sha256:21a3deaa0d32a8057914f36584b5288d2e5ecc984380bc0118285c70fa8c9300
 CMD ["cat", "msg.txt"]
 COPY src/docker/generated/msg.txt /
