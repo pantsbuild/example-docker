@@ -1,0 +1,46 @@
+# Copyright 2022 Pants project contributors.
+# Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+# See https://pants.readme.io/docs/using-pants-in-ci for tips on how to set up your CI with Pants.
+
+name: Pants
+
+on: [push, pull_request]
+
+jobs:
+  org-check:
+    name: Check GitHub Organization
+    if: ${{ github.repository_owner == 'pantsbuild' }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Noop
+        run: "true"
+  build:
+    name: Perform CI Checks
+    needs: org-check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      id: cache
+      with:
+        path: |
+          ~/.cache/pants/setup
+          ~/.cache/pants/lmdb_store
+          ~/.cache/pants/named_caches
+        key: ${{ runner.os }}-
+    - name: Bootstrap Pants
+      run: ./pants --version
+    - name: Check Pants config files
+      run: ./pants tailor --check update-build-files --check
+    - name: Lint, compile, and test
+      run: ./pants lint check test '::'
+    - name: Package / Run
+      run: |
+        ./pants package ::
+    - name: Upload Pants log
+      uses: actions/upload-artifact@v2
+      with:
+        name: pants-log
+        path: .pants.d/pants.log
+      if: always()  # We want the log even on failures.
