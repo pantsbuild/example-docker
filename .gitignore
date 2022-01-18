@@ -5,3 +5,5 @@
 /.pants.workdir.file_lock*
 
 *~
+*.pyc
+__pycache__/
