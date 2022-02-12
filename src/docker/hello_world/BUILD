@@ -17,6 +17,7 @@ docker_image(
     name="codegen",
     source="Dockerfile.codegen",
     dependencies=[":hello_msg"],
+    context_root="./",
 )
 
 experimental_shell_command(
@@ -24,5 +25,5 @@ experimental_shell_command(
     dependencies=["src/shell/hello_world"],
     outputs=["msg.txt"],
     command="../../shell/hello_world/main.sh > msg.txt",
-    tools=["echo", "sh"]
+    tools=["echo", "sh"],
 )
