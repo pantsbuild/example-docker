@@ -12,8 +12,8 @@
 
 set -eou pipefail
 
-# NOTE: To use an unreleased version of Pants from the pantsbuild/pants main branch,
-#  locate the main branch SHA, set PANTS_SHA=<SHA> in the environment, and run this script as usual.
+# NOTE: To use an unreleased version of Pants from the pantsbuild/pants master branch,
+#  locate the master branch SHA, set PANTS_SHA=<SHA> in the environment, and run this script as usual.
 #
 # E.g., PANTS_SHA=725fdaf504237190f6787dda3d72c39010a4c574 ./pants --version
 
@@ -34,9 +34,9 @@ fi
 
 PANTS_BOOTSTRAP="${PANTS_SETUP_CACHE}/bootstrap-$(uname -s)-$(uname -m)"
 
-_PEX_VERSION=2.1.42
-_PEX_URL="https://github.com/pantsbuild/pex/releases/download/v${_PEX_VERSION}/pex"
-_PEX_EXPECTED_SHA256="69d6b1b1009b00dd14a3a9f19b72cff818a713ca44b3186c9b12074b2a31e51f"
+PEX_VERSION=2.1.42
+PEX_URL="https://github.com/pantsbuild/pex/releases/download/v${PEX_VERSION}/pex"
+PEX_EXPECTED_SHA256="69d6b1b1009b00dd14a3a9f19b72cff818a713ca44b3186c9b12074b2a31e51f"
 
 VIRTUALENV_VERSION=20.4.7
 VIRTUALENV_REQUIREMENTS=$(
@@ -55,7 +55,6 @@ EOF
 
 COLOR_RED="\x1b[31m"
 COLOR_GREEN="\x1b[32m"
-COLOR_YELLOW="\x1b[33m"
 COLOR_RESET="\x1b[0m"
 
 function log() {
@@ -69,10 +68,6 @@ function die() {
 
 function green() {
   (($# > 0)) && log "${COLOR_GREEN}$*${COLOR_RESET}"
-}
-
-function warn() {
-  (($# > 0)) && log "${COLOR_YELLOW}$*${COLOR_RESET}"
 }
 
 function tempdir {
@@ -241,7 +236,7 @@ EOF
 
 function bootstrap_pex {
   local python="$1"
-  local bootstrapped="${PANTS_BOOTSTRAP}/pex-${_PEX_VERSION}/pex"
+  local bootstrapped="${PANTS_BOOTSTRAP}/pex-${PEX_VERSION}/pex"
   if [[ ! -f "${bootstrapped}" ]]; then
     (
       green "Downloading the Pex PEX."
@@ -249,27 +244,18 @@ function bootstrap_pex {
       local staging_dir
       staging_dir=$(tempdir "${PANTS_BOOTSTRAP}")
       cd "${staging_dir}"
-      curl -LO "${_PEX_URL}"
+      curl -LO "${PEX_URL}"
       fingerprint="$(compute_sha256 "${python}" "pex")"
-      if [[ "${_PEX_EXPECTED_SHA256}" != "${fingerprint}" ]]; then
-        die "SHA256 of ${_PEX_URL} is not as expected. Aborting."
+      if [[ "${PEX_EXPECTED_SHA256}" != "${fingerprint}" ]]; then
+        die "SHA256 of ${PEX_URL} is not as expected. Aborting."
       fi
-      green "SHA256 fingerprint of ${_PEX_URL} verified."
+      green "SHA256 fingerprint of ${PEX_URL} verified."
       mkdir -p "$(dirname "${bootstrapped}")"
       mv -f "${staging_dir}/pex" "${bootstrapped}"
       rmdir "${staging_dir}"
     ) 1>&2 || exit 1
   fi
   echo "${bootstrapped}"
-}
-
-function scrub_PEX_env_vars {
-  # Ensure the virtualenv PEX runs as shrink-wrapped.
-  # See: https://github.com/pantsbuild/setup/issues/105
-  if [[ -n "${!PEX_@}" ]]; then
-    warn "Scrubbing ${!PEX_@}"
-    unset "${!PEX_@}"
-  fi
 }
 
 function bootstrap_virtualenv {
@@ -284,10 +270,7 @@ function bootstrap_virtualenv {
       staging_dir=$(tempdir "${PANTS_BOOTSTRAP}")
       cd "${staging_dir}"
       echo "${VIRTUALENV_REQUIREMENTS}" > requirements.txt
-      (
-        scrub_PEX_env_vars
-        "${python}" "${pex_path}" -r requirements.txt -c virtualenv -o virtualenv.pex
-      )
+      "${python}" "${pex_path}" -r requirements.txt -c virtualenv -o virtualenv.pex
       mkdir -p "$(dirname "${bootstrapped}")"
       mv -f "${staging_dir}/virtualenv.pex" "${bootstrapped}"
       rm -rf "${staging_dir}"
@@ -339,13 +322,10 @@ function bootstrap_pants {
       local virtualenv_path
       virtualenv_path="$(bootstrap_virtualenv "${python}")" || exit 1
       green "Installing ${pants_requirement} into a virtual environment at ${bootstrapped}"
-      (
-        scrub_PEX_env_vars
-        # shellcheck disable=SC2086
-        "${python}" "${virtualenv_path}" --no-download "${staging_dir}/install" && \
-        "${staging_dir}/install/bin/pip" install -U pip && \
-        "${staging_dir}/install/bin/pip" install ${maybe_find_links} --progress-bar off "${pants_requirement}"
-      ) && \
+      # shellcheck disable=SC2086
+      "${python}" "${virtualenv_path}" --no-download "${staging_dir}/install" && \
+      "${staging_dir}/install/bin/pip" install -U pip && \
+      "${staging_dir}/install/bin/pip" install ${maybe_find_links} --progress-bar off "${pants_requirement}" && \
       ln -s "${staging_dir}/install" "${staging_dir}/${target_folder_name}" && \
       mv "${staging_dir}/${target_folder_name}" "${bootstrapped}" && \
       green "New virtual environment successfully created at ${bootstrapped}."

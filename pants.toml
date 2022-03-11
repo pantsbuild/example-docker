@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = "2.10.0rc0"
+pants_version = "2.10.0rc3"
 
 backend_packages = [
   "pants.backend.docker",
@@ -16,6 +16,9 @@ backend_packages = [
   "pants.backend.shell.lint.shfmt",
 ]
 
+# This will become the default in 2.11, and is only explicitly set to not break
+# backwards-compatibility for existing users. If you are setting up Pants for
+# the first time, set this to false.
 use_deprecated_python_macros = false
 
 
@@ -25,6 +28,6 @@ repo_id = "B573B56B-6289-40C5-ADB7-4C5FA659EAD1"
 
 
 [python]
-# Narrow constraint, so that we build Python PEX'es that will be executable by our selected Docker
-# base image, `python:3.8`.
-interpreter_constraints = [">=3.8,<3.9"]
+# We use a narrow interpreter constraint to ensure that Python PEX'es will be executable by our
+# selected Docker base image, `python:3.8`.
+interpreter_constraints = ["==3.8.*"]
