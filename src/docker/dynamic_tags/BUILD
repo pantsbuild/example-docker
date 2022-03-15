@@ -15,7 +15,7 @@ docker_image(
         #
         # "ARG DYNAMIC_TAG=default",
         "FROM python:3.8",
-        "RUN pip install cowsay",
+        "RUN pip install --no-cache-dir cowsay==4.0",
         'CMD ["cowsay", "demo"]',
     ],
 )
