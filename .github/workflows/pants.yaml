@@ -36,6 +36,8 @@ jobs:
     - name: Lint, compile, and test
       run: ./pants lint check test '::'
     - name: Package / Run
+      env:
+        DYNAMIC_TAG: workflow
       run: |
         ./pants package ::
     - name: Upload Pants log
