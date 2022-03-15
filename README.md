@@ -84,3 +84,31 @@ Try these out in this repo!
 ```
 ./pants count-loc '**/*'
 ```
+
+
+## Dynamic image tag
+
+The documentation for [dynamic image
+tagging](https://www.pantsbuild.org/docs/tagging-docker-images#using-env-vars-to-include-dynamic-data-in-tags)
+has an example implementation here showcasing how it works.
+
+```
+DYNAMIC_TAG=$(date +%Y.%m.%d) ./pants package src/docker/dynamic_tags
+
+10:47:43.89 [INFO] Completed: Building docker image dynamic_tags:1.0-2022.03.15
+10:47:43.89 [INFO] Built docker image: dynamic_tags:1.0-2022.03.15
+Docker image ID: sha256:8f6922aec0de7c147862672fa2cef4bd72f51e02b5a06089b0383355410b79f2
+
+DYNAMIC_TAG=$(date +%Y.%m.%d) ./pants run src/docker/dynamic_tags
+10:47:43.89 [INFO] Completed: Building docker image dynamic_tags:1.0-2022.03.15
+  ____
+| demo |
+  ====
+    \
+     \
+       ^__^
+       (oo)\_______
+       (__)\       )\/\
+           ||----w |
+           ||     ||
+```
