@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = "2.10.0"
+pants_version = "2.14.0"
 
 backend_packages = [
   "pants.backend.docker",
@@ -15,12 +15,6 @@ backend_packages = [
   "pants.backend.shell.lint.shellcheck",
   "pants.backend.shell.lint.shfmt",
 ]
-
-# This will become the default in 2.11, and is only explicitly set to not break
-# backwards-compatibility for existing users. If you are setting up Pants for
-# the first time, set this to false.
-use_deprecated_python_macros = false
-
 
 [anonymous-telemetry]
 enabled = true

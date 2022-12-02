@@ -18,17 +18,34 @@ jobs:
   build:
     name: Perform CI Checks
     needs: org-check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python-version: [3.8]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      id: cache
+    - uses: actions/checkout@v3
+    - uses: pantsbuild/actions/init-pants@v2
+      # This action bootstraps pants and manages 2-3 GHA caches.
+      # See: github.com/pantsbuild/actions/tree/main/init-pants/
       with:
-        path: |
-          ~/.cache/pants/setup
-          ~/.cache/pants/lmdb_store
-          ~/.cache/pants/named_caches
-        key: ${{ runner.os }}-
+        pants-python-version: ${{ matrix.python-version }}
+        # cache0 makes it easy to bust the cache if needed
+        # just increase the integer to start with a fresh cache
+        gha-cache-key: cache0-py${{ matrix.python-version }}
+        # This repo has no 3rd-party requirements and no lockfiles, so we don't invalidate
+        # the named caches on anything extra. See other example repos for better examples of
+        # how to set up this cache.
+        named-caches-hash: ""
+        # If you're not using a fine-grained remote caching service (see https://www.pantsbuild.org/docs/remote-caching),
+        # then you may also want to preserve the local Pants cache (lmdb_store). However this must invalidate for
+        # changes to any file that can affect the build, so may not be practical in larger repos.
+        # A remote cache service integrates with Pants's fine-grained invalidation and avoids these problems.
+        cache-lmdb-store: 'true'  # defaults to 'false'
+        # Note that named_caches and lmdb_store falls back to partial restore keys which
+        # may give a useful partial result that will save time over completely clean state,
+        # but will cause the cache entry to grow without bound over time.
+        # See https://pants.readme.io/docs/using-pants-in-ci for tips on how to periodically clean it up.
+        # Alternatively you change gha-cache-key to ignore old caches.
     - name: Bootstrap Pants
       run: ./pants --version
     - name: Check Pants config files
@@ -41,7 +58,7 @@ jobs:
       run: |
         ./pants package ::
     - name: Upload Pants log
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: pants-log
         path: .pants.d/pants.log
