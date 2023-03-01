@@ -24,14 +24,16 @@ jobs:
         python-version: [3.8]
     steps:
     - uses: actions/checkout@v3
-    - uses: pantsbuild/actions/init-pants@v2
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: pantsbuild/actions/init-pants@v4-scie-pants
       # This action bootstraps pants and manages 2-3 GHA caches.
       # See: github.com/pantsbuild/actions/tree/main/init-pants/
       with:
-        pants-python-version: ${{ matrix.python-version }}
-        # cache0 makes it easy to bust the cache if needed
+        # v0 makes it easy to bust the cache if needed
         # just increase the integer to start with a fresh cache
-        gha-cache-key: cache0-py${{ matrix.python-version }}
+        gha-cache-key: v0
         # This repo has no 3rd-party requirements and no lockfiles, so we don't invalidate
         # the named caches on anything extra. See other example repos for better examples of
         # how to set up this cache.
@@ -47,16 +49,16 @@ jobs:
         # See https://pants.readme.io/docs/using-pants-in-ci for tips on how to periodically clean it up.
         # Alternatively you change gha-cache-key to ignore old caches.
     - name: Bootstrap Pants
-      run: ./pants --version
+      run: pants --version
     - name: Check Pants config files
-      run: ./pants tailor --check update-build-files --check
+      run: pants tailor --check update-build-files --check
     - name: Lint, compile, and test
-      run: ./pants lint check test '::'
+      run: pants lint check test '::'
     - name: Package / Run
       env:
         DYNAMIC_TAG: workflow
       run: |
-        ./pants package ::
+        pants package ::
     - name: Upload Pants log
       uses: actions/upload-artifact@v3
       with:
