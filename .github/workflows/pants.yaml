@@ -51,7 +51,7 @@ jobs:
     - name: Bootstrap Pants
       run: pants --version
     - name: Check Pants config files
-      run: pants tailor --check update-build-files --check
+      run: pants tailor --check update-build-files --check '::'
     - name: Lint, compile, and test
       run: pants lint check test '::'
     - name: Package / Run
