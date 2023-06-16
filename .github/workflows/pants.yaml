@@ -50,6 +50,8 @@ jobs:
         # Alternatively you change gha-cache-key to ignore old caches.
     - name: Bootstrap Pants
       run: pants --version
+    - name: Debug
+      run: ls -la
     - name: Check Pants config files
       run: pants tailor --check update-build-files --check '::'
     - name: Lint, compile, and test
