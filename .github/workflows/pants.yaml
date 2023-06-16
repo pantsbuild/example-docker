@@ -51,7 +51,7 @@ jobs:
     - name: Bootstrap Pants
       run: pants --version
     - name: Debug
-      run: ls -la
+      run: ls -la; rm get-pants.sh; ls -la
     - name: Check Pants config files
       run: pants tailor --check update-build-files --check '::'
     - name: Lint, compile, and test
