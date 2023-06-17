@@ -49,9 +49,10 @@ jobs:
         # See https://pants.readme.io/docs/using-pants-in-ci for tips on how to periodically clean it up.
         # Alternatively you change gha-cache-key to ignore old caches.
     - name: Bootstrap Pants
-      run: pants --version
+      # necessary to remove the `get-pants.sh`, otherwise the `tailor` goal attempts to create `shell_sources` target
+      run: pants --version; rm get-pants.sh
     - name: Check Pants config files
-      run: pants tailor --check update-build-files --check
+      run: pants tailor --check update-build-files --check '::'
     - name: Lint, compile, and test
       run: pants lint check test '::'
     - name: Package / Run

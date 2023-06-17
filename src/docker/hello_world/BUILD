@@ -20,9 +20,9 @@ docker_image(
     context_root="./",
 )
 
-experimental_shell_command(
+shell_command(
     name="hello_msg",
-    dependencies=["src/shell/hello_world"],
+    output_dependencies=["src/shell/hello_world"],
     outputs=["msg.txt"],
     command="../../shell/hello_world/main.sh > msg.txt",
     tools=["echo", "sh"],
