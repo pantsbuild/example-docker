@@ -74,10 +74,10 @@ pants list 'src/**/*.py'  # Just targets containing Python code.
 ```
 
 
-## Run linters and formatters
+## Run linters, formatters and fixers
 
 ```
-pants fmt lint ::  # First format, then lint all sources.
+pants fix lint ::  # First format and fix, then lint all sources.
 ```
 
 
