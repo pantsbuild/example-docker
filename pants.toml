@@ -4,7 +4,7 @@ pants_version = "2.16.0"
 backend_packages = [
   "pants.backend.docker",
   "pants.backend.docker.lint.hadolint",
-  "pants.backend.experimental.python.lint.autoflake",
+  "pants.backend.python.lint.autoflake",
   "pants.backend.python",
   "pants.backend.python.lint.black",
   "pants.backend.python.lint.docformatter",

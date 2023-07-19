@@ -22,8 +22,8 @@ docker_image(
 
 shell_command(
     name="hello_msg",
-    output_dependencies=["src/shell/hello_world"],
-    outputs=["msg.txt"],
+    execution_dependencies=["src/shell/hello_world"],
+    output_files=["msg.txt"],
     command="../../shell/hello_world/main.sh > msg.txt",
     tools=["echo", "sh"],
 )
