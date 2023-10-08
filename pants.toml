@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = "2.17.0"
+pants_version = "2.19.0.dev2"
 
 backend_packages = [
   "pants.backend.docker",
@@ -28,3 +28,9 @@ interpreter_constraints = ["==3.8.*"]
 
 [python-infer]
 use_rust_parser = true
+
+[docker]
+env_vars = [
+  "DOCKER_BUILDKIT",
+  "BUILDX_BUILDER"
+]
