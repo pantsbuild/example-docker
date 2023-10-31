@@ -5,7 +5,7 @@
 
 name: Pants
 
-on: [pull_request]
+on: [push, pull_request]
 
 jobs:
   org-check:
@@ -17,7 +17,7 @@ jobs:
         run: "true"
   build:
     name: Perform CI Checks
-    # needs: org-check
+    needs: org-check
     runs-on: ubuntu-20.04
     strategy:
       matrix:
