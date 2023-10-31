@@ -32,5 +32,7 @@ use_rust_parser = true
 [docker]
 env_vars = [
   "DOCKER_BUILDKIT",
-  "BUILDX_BUILDER"
+  "BUILDX_BUILDER",
+  "ACTIONS_CACHE_URL",
+  "ACTIONS_RUNTIME_TOKEN",
 ]
