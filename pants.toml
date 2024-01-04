@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = "2.19.0.dev4"
+pants_version = "2.19.0rc3"
 
 backend_packages = [
   "pants.backend.docker",
@@ -31,8 +31,8 @@ use_rust_parser = true
 
 [docker]
 env_vars = [
-  "DOCKER_BUILDKIT",
-  "BUILDX_BUILDER",
   "ACTIONS_CACHE_URL",
   "ACTIONS_RUNTIME_TOKEN",
+  "DYNAMIC_TAG",
 ]
+use_buildx=true
