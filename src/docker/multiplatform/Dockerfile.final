@@ -1,0 +1,6 @@
+ARG PARENT=:multiplatform-base
+# hadolint ignore=DL3006
+FROM ${PARENT}
+
+RUN cat base.txt && \
+  echo "final image" >> final.txt
