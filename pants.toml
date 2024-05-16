@@ -28,3 +28,11 @@ interpreter_constraints = ["==3.8.*"]
 
 [python-infer]
 use_rust_parser = true
+
+[docker]
+env_vars = [
+  "ACTIONS_CACHE_URL",
+  "ACTIONS_RUNTIME_TOKEN",
+  "DYNAMIC_TAG",
+]
+use_buildx=true

@@ -27,6 +27,26 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+    - uses: crazy-max/ghaction-setup-docker@v3
+      with:
+        daemon-config: |
+            {
+              "features": {
+                "containerd-snapshotter": true
+              }
+            }       
+    - uses: docker/setup-buildx-action@v3
+      with:
+        install: true
+        driver: docker
+    # Required for multi-platform builds
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: linux/amd64,linux/arm64
+    # Exposes Github env vars needed for docker caching - see https://github.com/orgs/community/discussions/42856
+    - name: Expose GitHub Runtime
+      uses: crazy-max/ghaction-github-runtime@v3
     - uses: pantsbuild/actions/init-pants@v5-scie-pants
       # This action bootstraps pants and manages 2-3 GHA caches.
       # See: github.com/pantsbuild/actions/tree/main/init-pants/
@@ -58,7 +78,7 @@ jobs:
       env:
         DYNAMIC_TAG: workflow
       run: |
-        pants package ::
+        pants --docker-build-verbose package ::
     - name: Upload Pants log
       uses: actions/upload-artifact@v3
       with:
