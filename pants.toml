@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = "2.24.0"
+pants_version = "2.25.1rc0"
 
 backend_packages = [
   "pants.backend.docker",
