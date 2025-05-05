@@ -43,6 +43,7 @@ jobs:
         with:
           install: true
           driver: docker
+          version: latest
 
       # Required for multi-platform builds
       - name: Setup QEMU
