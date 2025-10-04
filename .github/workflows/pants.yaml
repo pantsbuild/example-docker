@@ -24,13 +24,13 @@ jobs:
       matrix:
         python-version: [3.8]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: crazy-max/ghaction-setup-docker@v3
+      - uses: docker/setup-docker-action@v4
         with:
           daemon-config: |
             {
@@ -49,14 +49,8 @@ jobs:
         uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/amd64,linux/arm64
-
-      - name: Set up environment variables for Pants (Docker) to use GHA Cache
-        uses: actions/github-script@v7
-        with:
-          script: |
-            core.exportVariable("ACTIONS_CACHE_URL", process.env.ACTIONS_CACHE_URL || "");
-            core.exportVariable("ACTIONS_RUNTIME_TOKEN", process.env.ACTIONS_RUNTIME_TOKEN || "");
-
+      - name: Expose ACTIONS_* env vars to Pants, so it can use the GHA cache
+        uses: crazy-max/ghaction-github-runtime@v3
       - uses: pantsbuild/actions/init-pants@v9
         # This action bootstraps pants and manages 2-3 GHA caches.
         # See: github.com/pantsbuild/actions/tree/main/init-pants/
@@ -81,7 +75,6 @@ jobs:
 
       - name: Bootstrap Pants
         run: pants --version
-
       - name: Check Pants config files
         run: pants tailor --check update-build-files --check '::'
 

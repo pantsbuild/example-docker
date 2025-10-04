@@ -31,8 +31,9 @@ use_rust_parser = true
 
 [docker]
 env_vars = [
-  "ACTIONS_CACHE_URL",
+  "ACTIONS_RESULTS_URL",
   "ACTIONS_RUNTIME_TOKEN",
+  "ACTIONS_CACHE_SERVICE_V2",
   "DYNAMIC_TAG",
 ]
 use_buildx=true
