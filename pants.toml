@@ -1,5 +1,5 @@
 [GLOBAL]
-pants_version = "2.28.0"
+pants_version = "2.31.0"
 
 backend_packages = [
   "pants.backend.docker",
@@ -23,8 +23,8 @@ repo_id = "B573B56B-6289-40C5-ADB7-4C5FA659EAD1"
 
 [python]
 # We use a narrow interpreter constraint to ensure that Python PEX'es will be executable by our
-# selected Docker base image, `python:3.8`.
-interpreter_constraints = ["==3.8.*"]
+# selected Docker base image, `python:3.12`.
+interpreter_constraints = ["==3.12.*"]
 
 [python-infer]
 use_rust_parser = true

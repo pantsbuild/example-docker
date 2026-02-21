@@ -14,7 +14,7 @@ docker_image(
         # provided in the Dockerfile instruction, while still being overridable from the environment.
         #
         # "ARG DYNAMIC_TAG=default",
-        "FROM python:3.8",
+        "FROM python:3.12",
         "RUN pip install --no-cache-dir cowsay==4.0",
         'CMD ["cowsay", "demo"]',
     ],
